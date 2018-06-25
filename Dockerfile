@@ -58,10 +58,18 @@ RUN set -xe \
   && ln -s $NOVNC_HOME/vnc_auto.html $NOVNC_HOME/index.html \
   && sudo apk del wget
 
-RUN echo "X11Forwarding yes" >> /etc/ssh/sshd_config && \
-    echo "X11UseLocalhost no" >> /etc/ssh/sshd_config && \
-    ssh-keygen -A 
 
+RUN set -xe && sudo apk add openssh x2goserver
+
+#RUN set -xe  && \
+#    sudo echo "X11Forwarding yes" >> /etc/ssh/sshd_config && \
+#    sudo echo "X11UseLocalhost no" >> /etc/ssh/sshd_config && \
+#    sudo ssh-keygen -A 
+
+RUN sudo bash -c 'echo "X11Forwarding yes" >> /etc/ssh/sshd_config' && \
+    sudo bash -c 'echo "X11UseLocalhost no" >> /etc/ssh/sshd_config' && \
+    sudo ssh-keygen -A 
+    
 WORKDIR $HOME
 
 EXPOSE $VNC_PORT $NOVNC_PORT $SSH_PORT
