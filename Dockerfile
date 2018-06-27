@@ -9,17 +9,11 @@ RUN set -xe && \
      echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \ 
      echo "@edgecommunity http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-RUN apk update upgrade
+#RUN apk add --upgrade -no-cache apk-tools@testing
+RUN apk update upgrade && \
+    apk add --upgrade apk-tools@testing
 
-RUN apk add --upgrade apk-tools@testing
-
-RUN apk add libressl@edge 
-
-RUN apk add x11vnc@edgecommunity
-
-RUN apk update --no-cache add apk-tools git git x2goserver openjdk8 openssh openssh-server
-
-RUN apk --update --no-cache add xvfb x11vnc xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl 
+RUN apk --update --no-cache add xvfb x11vnc xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl openssh x2goserver git openjdk8 libressl@edge x11vnc@edgecommunity
 
 RUN mkdir -p /usr/share/wallpapers \
   && curl https://img2.goodfon.com/original/2048x1820/3/b6/android-5-0-lollipop-material-5355.jpg -o /usr/share/wallpapers/android-5-0-lollipop-material-5355.jpg \
@@ -52,19 +46,10 @@ RUN set -xe \
   && sudo apk add ca-certificates wget \
   && sudo update-ca-certificates \
   && mkdir -p $NOVNC_HOME/utils/websockify \
-  && wget -qO- https://github.com/novnc/noVNC/archive/v0.6.2.tar.gz | tar xz --strip 1 -C $NOVNC_HOME \
-  && wget -qO- https://github.com/novnc/websockify/archive/v0.6.1.tar.gz | tar xzf - --strip 1 -C $NOVNC_HOME/utils/websockify \
+  && wget -qO- https://github.com/novnc/noVNC/archive/v1.0.0.tar.gz | tar xz --strip 1 -C $NOVNC_HOME \
+  && wget -qO- https://github.com/novnc/websockify/archive/v0.8.0.tar.gz | tar xzf - --strip 1 -C $NOVNC_HOME/utils/websockify \
   && chmod +x -v $NOVNC_HOME/utils/*.sh \
-  && ln -s $NOVNC_HOME/vnc_auto.html $NOVNC_HOME/index.html \
-  && sudo apk del wget
-
-
-RUN set -xe && sudo apk add openssh x2goserver
-
-#RUN set -xe  && \
-#    sudo echo "X11Forwarding yes" >> /etc/ssh/sshd_config && \
-#    sudo echo "X11UseLocalhost no" >> /etc/ssh/sshd_config && \
-#    sudo ssh-keygen -A 
+  && ln -s $NOVNC_HOME/vnc_auto.html $NOVNC_HOME/index.html 
 
 RUN sudo bash -c 'echo "X11Forwarding yes" >> /etc/ssh/sshd_config' && \
     sudo bash -c 'echo "X11UseLocalhost no" >> /etc/ssh/sshd_config' && \
