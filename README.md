@@ -5,8 +5,9 @@ very very much alpha!!!
 What you get:
 * Minimal Alpine Linux base
 * Xfce desktop
-* Chomium browser
+* Chomium, Firefox and Midori browser
 * x2goserver running over SSH
+* Intellij IDEA IDE 
 
 To build:
 

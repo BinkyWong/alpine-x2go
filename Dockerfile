@@ -4,25 +4,21 @@ FROM alpine
 
 COPY config /etc/skel/.config
 
-RUN set -xe && \
-     echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-     echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \ 
-     echo "@edgecommunity http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-#RUN apk add --upgrade -no-cache apk-tools@testing
-RUN apk update upgrade && \
-    apk add --upgrade apk-tools@testing
-
-RUN apk --update --no-cache add xvfb x11vnc xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl openssh x2goserver git openjdk8 libressl@edge x11vnc@edgecommunity
+RUN apk update && \
+    apk upgrade && \
+    apk --update --no-cache add xvfb x11vnc xfce4 xfce4-terminal paper-icon-theme arc-theme chromium python bash sudo htop procps curl openssh x2goserver git openjdk8 libressl x11vnc vim firefox midori xterm
 
 RUN mkdir -p /usr/share/wallpapers \
-  && curl https://img2.goodfon.com/original/2048x1820/3/b6/android-5-0-lollipop-material-5355.jpg -o /usr/share/wallpapers/android-5-0-lollipop-material-5355.jpg \
+  && curl http://getwallpapers.com/wallpaper/full/d/5/0/62105.jpg -o /usr/share/wallpapers/android-5-0-lollipop-material-5355.jpg \
   && echo "CHROMIUM_FLAGS=\"--no-sandbox --no-first-run --disable-gpu\"" >> /etc/chromium/chromium.conf \
   && addgroup alpine \
   && adduser -G alpine -s /bin/bash -D alpine \
   && echo "alpine:alpine" | /usr/sbin/chpasswd \
-  && echo "alpine ALL=NOPASSWD: ALL" >> /etc/sudoers \
-  && apk del curl 
+  && echo "alpine ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER alpine
 
@@ -56,6 +52,10 @@ RUN sudo bash -c 'echo "X11Forwarding yes" >> /etc/ssh/sshd_config' && \
     sudo ssh-keygen -A 
     
 WORKDIR $HOME
+
+RUN set -xe && \
+    mkdir $HOME/idea  && \
+    wget -qO- https://download.jetbrains.com/idea/ideaIU-2018.1.5.tar.gz | tar zx --strip 1 -C $HOME/idea
 
 EXPOSE $VNC_PORT $NOVNC_PORT $SSH_PORT
 
