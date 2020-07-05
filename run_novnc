@@ -15,6 +15,6 @@ Xvfb $DISPLAY -screen 0 "$VNC_RESOLUTION"x"$VNC_COL_DEPTH" &
 startxfce4 --replace > $HOME/wm.log 2>&1 &
 sleep 1
 sudo /usr/sbin/sshd -D &
-x11vnc -xkb -noxrecord -noxfixes -noxdamage -permitfiletransfer -tightfilexfer -rfbauth $PASSWD_PATH -display $DISPLAY -forever -o $HOME/.x11vnc/x11vnc.log -bg && tail -f $HOME/.x11vnc/x11vnc.log
+x11vnc -ncache 10 -xkb -noxrecord -noxfixes -noxdamage -permitfiletransfer -tightfilexfer -rfbauth $PASSWD_PATH -display $DISPLAY -forever -o $HOME/.x11vnc/x11vnc.log -bg && tail -f $HOME/.x11vnc/x11vnc.log
 
 
